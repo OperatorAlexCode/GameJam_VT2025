@@ -11,12 +11,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int MaxHealth;
     [SerializeField] float Speed;
     Vector2 MoveDirection;
-    //[SerializeField] List<GameObject>
+    CrystalRing CrystalRing;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        CrystalRing = GetComponentInChildren<CrystalRing>();
     }
 
     // Update is called once per frame
@@ -32,6 +32,11 @@ public class PlayerController : MonoBehaviour
 
     public void CycleCrystal(CallbackContext context)
     {
+        if (context.started)
+        {
+            float value = context.ReadValue<float>();
 
+           CrystalRing.CycleCrystal(value);
+        }
     }
 }

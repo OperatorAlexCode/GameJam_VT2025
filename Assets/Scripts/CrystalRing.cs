@@ -9,10 +9,14 @@ public class CrystalRing : MonoBehaviour
     [SerializeField] float RotationSpeed = 1;
     float Rotation;
 
+    [SerializeField] float SelectedScale = 1.5f;
+    [SerializeField]
+    int SelectedCrystal = 0;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        Crystals[SelectedCrystal].transform.localScale *= SelectedScale;
     }
 
     // Update is called once per frame
@@ -32,6 +36,21 @@ public class CrystalRing : MonoBehaviour
         }
 
         Rotation += RotationSpeed*Time.deltaTime;
-        Rotation = Mathf.Clamp(Rotation,0,360f);
+        Rotation = Rotation%360;
+    }
+
+    public void CycleCrystal(float direction)
+    {
+        Crystals[SelectedCrystal].transform.localScale /= SelectedScale;
+
+        SelectedCrystal += (int)direction;
+
+        if (SelectedCrystal < 0)
+            SelectedCrystal = Crystals.Count-1;
+        
+        else
+            SelectedCrystal = SelectedCrystal % Crystals.Count;
+
+        Crystals[SelectedCrystal].transform.localScale *= SelectedScale;
     }
 }
