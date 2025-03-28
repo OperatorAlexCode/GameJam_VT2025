@@ -16,13 +16,13 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position += (Vector3)MoveDirection;
+        transform.position += (Vector3)MoveDirection * Time.deltaTime;
     }
 
     public void Move(CallbackContext context)
