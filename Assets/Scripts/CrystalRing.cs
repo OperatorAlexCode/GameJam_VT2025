@@ -63,14 +63,14 @@ public class CrystalRing : MonoBehaviour
         {
             if (RotationDirection != direction)
             {
-                RotationDirection = (int)direction;
+                RotationDirection = (int)Mathf.Clamp(direction,-1f,1f);
             }
 
             else
             {
                 Crystals[SelectedCrystal].transform.localScale /= SelectedScale;
 
-                SelectedCrystal += (int)direction;
+                RotationDirection = (int)Mathf.Clamp(direction, -1f, 1f);
 
                 if (SelectedCrystal < 0)
                     SelectedCrystal = Crystals.Count - 1;

@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] PlayerController Player;
     [SerializeField] Animator Animator;
     bool Dead;
+    bool Stunned;
 
     void Start()
     {
@@ -22,20 +23,27 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (Player != null && !Dead)
+        if (Player != null)
         {
-            Vector3 playerDir = Player.transform.position - transform.position;
-            playerDir = playerDir.normalized;
+            if (Player.IsDead)
+            {
+                Destroy(gameObject);
+            }
 
-            //Rigidbody.AddForce(playerDir * Time.deltaTime, ForceMode2D.Impulse);
-            transform.position += (Vector3)playerDir * Time.deltaTime;
+            else if (!Dead && !Stunned)
+            {
+                Vector3 playerDir = Player.transform.position - transform.position;
+                playerDir = playerDir.normalized;
 
-            Animator.SetFloat("MoveDirX", playerDir.x);
-            Animator.SetFloat("MoveDirY", playerDir.y);
+                //Rigidbody.AddForce(playerDir * Time.deltaTime, ForceMode2D.Impulse);
+                transform.position += playerDir * Time.deltaTime;
+
+                Animator.SetFloat("MoveDirX", playerDir.x);
+                Animator.SetFloat("MoveDirY", playerDir.y);
+            }
         }
     }
 
-    // Applies x damage to enemy
     public void TakeDamage(int dmg)
     {
         Health -= dmg;
@@ -45,12 +53,37 @@ public class Enemy : MonoBehaviour
             Dead = true;
             Animator.SetTrigger("Death");
             Rigidbody.velocity = Vector2.zero;
-            Destroy(gameObject, 2.24f);
+            GetComponent<Collider2D>().enabled = false;
         }
+
+        else
+        {
+            StartCoroutine(SpriteFlicker());
+        }
+    }
+
+    IEnumerator SpriteFlicker()
+    {
+        Color startingColor = GetComponent<SpriteRenderer>().color;
+
+        GetComponent<Collider2D>().enabled = false;
+        GetComponent<SpriteRenderer>().enabled = false;
+        GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
+        yield return new WaitForSeconds(0.2f);
+        GetComponent<Collider2D>().enabled = true;
+        GetComponent<SpriteRenderer>().enabled = true;
+        GetComponent<SpriteRenderer>().color = startingColor;
+
     }
 
     public void DestroyObject()
     {
         Destroy(gameObject);
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+            Player.TakeDamage(Damage);
     }
 }
