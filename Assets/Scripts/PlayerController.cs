@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
             CrystalRing.UseCrystal();
     }
 
-    public void Damage(int dmg)
+    public void TakeDamage(int dmg)
     {
         if (CanTakeDamage)
             CurrentHealth = Mathf.Max(CurrentHealth - dmg, 0);
