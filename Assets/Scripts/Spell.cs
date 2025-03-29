@@ -44,6 +44,12 @@ public class Spell : MonoBehaviour
             OnCollision(collision.gameObject);
     }
 
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if ((CollisionLayers & (1 << collider.gameObject.layer)) > 0)
+            OnCollision(collider.gameObject);
+    }
+
     IEnumerator Destructor()
     {
         yield return new WaitForSeconds(LifeTime);

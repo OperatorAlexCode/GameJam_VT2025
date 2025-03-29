@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Enemy : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] Rigidbody2D Rigidbody;
     [SerializeField] PlayerController Player;
     [SerializeField] Animator Animator;
+    bool Dead;
 
     void Start()
     {
@@ -20,12 +22,13 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (Player != null)
+        if (Player != null && !Dead)
         {
             Vector3 playerDir = Player.transform.position - transform.position;
             playerDir = playerDir.normalized;
 
-            Rigidbody.AddForce(playerDir*Time.deltaTime, ForceMode2D.Impulse);
+            //Rigidbody.AddForce(playerDir * Time.deltaTime, ForceMode2D.Impulse);
+            transform.position += (Vector3)playerDir * Time.deltaTime;
 
             Animator.SetFloat("MoveDirX", playerDir.x);
             Animator.SetFloat("MoveDirY", playerDir.y);
@@ -38,6 +41,16 @@ public class Enemy : MonoBehaviour
         Health -= dmg;
 
         if (Health <= 0)
-            Destroy(gameObject);
+        {
+            Dead = true;
+            Animator.SetTrigger("Death");
+            Rigidbody.velocity = Vector2.zero;
+            Destroy(gameObject, 2.24f);
+        }
+    }
+
+    public void DestroyObject()
+    {
+        Destroy(gameObject);
     }
 }

@@ -25,6 +25,7 @@ public class Crystal : MonoBehaviour
     IEnumerator Destructor()
     {
         yield return new WaitUntil(() => SpellInEffect == null);
+        yield return new WaitForSeconds(0.5f);
         GetComponentInParent<PlayerController>().DrawNewCrystal();
         Destroy(gameObject);
     }

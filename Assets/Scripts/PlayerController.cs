@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     CrystalRing CrystalRing;
     public Queue<GameObject> StoredCrystals = new();
     public bool CanTakeDamage;
+    public bool IsDead;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +28,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         transform.position += (Vector3)MoveDirection * Time.deltaTime;
+
+        GetComponent<Animator>().SetBool("Walking", MoveDirection != Vector2.zero);
+
     }
 
     public void Move(CallbackContext context)
@@ -35,11 +39,11 @@ public class PlayerController : MonoBehaviour
 
         // Face sprite left
         if (MoveDirection.x < 0)
-            GetComponent<SpriteRenderer>().flipY = true;
+            GetComponent<SpriteRenderer>().flipX = true;
 
         // Face sprite right
         else if (MoveDirection.x > 0)
-            GetComponent<SpriteRenderer>().flipY = false;
+            GetComponent<SpriteRenderer>().flipX = false;
     }
 
     public void CycleCrystal(CallbackContext context)
@@ -61,7 +65,11 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int dmg)
     {
         if (CanTakeDamage)
+        {
             CurrentHealth = Mathf.Max(CurrentHealth - dmg, 0);
+            if (CurrentHealth <= 0)
+                GetComponent<Animator>().SetTrigger("Death");
+        }
     }
 
     public void Heal(int hpToHeal)
