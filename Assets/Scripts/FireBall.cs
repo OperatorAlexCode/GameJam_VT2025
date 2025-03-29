@@ -14,6 +14,9 @@ public class FireBall : Spell
 
     protected override void OnCollision(GameObject collidedObject)
     {
+        if (collidedObject.tag == "Enemy")
+            collidedObject.GetComponent<Enemy>().TakeDamage(Damage);
+
         Destroy(gameObject);
     }
 }

@@ -16,6 +16,7 @@ public class CrystalRing : MonoBehaviour
     [SerializeField] float Radius = 1.5f;
     [SerializeField] float RotationSpeed = 1;
     float Rotation;
+    public int RotationDirection = 1;
 
     [SerializeField] float NormalScale = 0.5f;
     [SerializeField] float SelectedScale = 1.5f;
@@ -45,8 +46,14 @@ public class CrystalRing : MonoBehaviour
                 Crystals[x].transform.localScale = Vector3.one * NormalScale;
         }
 
-        Rotation += RotationSpeed*Time.deltaTime;
-        Rotation = Rotation%360;
+        Rotation += RotationSpeed*Time.deltaTime*RotationDirection;
+
+        if (RotationDirection < 0 && Rotation < 0)
+            Rotation = 360f + Rotation;
+        
+        else
+            Rotation = Rotation%360;
+
         ScaleSelectedCrystal();
     }
 
@@ -54,17 +61,25 @@ public class CrystalRing : MonoBehaviour
     {
         if (Crystals.Count > 0)
         {
-            Crystals[SelectedCrystal].transform.localScale /= SelectedScale;
-
-            SelectedCrystal += (int)direction;
-
-            if (SelectedCrystal < 0)
-                SelectedCrystal = Crystals.Count - 1;
+            if (RotationDirection != direction)
+            {
+                RotationDirection = (int)direction;
+            }
 
             else
-                SelectedCrystal = SelectedCrystal % Crystals.Count;
+            {
+                Crystals[SelectedCrystal].transform.localScale /= SelectedScale;
 
-            Crystals[SelectedCrystal].transform.localScale *= SelectedScale;
+                SelectedCrystal += (int)direction;
+
+                if (SelectedCrystal < 0)
+                    SelectedCrystal = Crystals.Count - 1;
+
+                else
+                    SelectedCrystal = SelectedCrystal % Crystals.Count;
+
+                Crystals[SelectedCrystal].transform.localScale *= SelectedScale;
+            }
         }
     }
 
