@@ -1,21 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Spell : MonoBehaviour
 {
-    [SerializeField] float LifeTime;
+    [SerializeField] protected float LifeTime;
+    [SerializeField] protected PlayerController Player;
+    [SerializeField] protected Rigidbody2D RigidBody;
+    [SerializeField] protected LayerMask CollisionLayers;
 
-    // Start is called before the first frame update
     void Start()
     {
-        SpellLogic();
+        Player = GameObject.Find("Player").GetComponent<PlayerController>();
+        RigidBody = GetComponent<Rigidbody2D>();
+        SpellLogicStart();
         StartCoroutine(Destructor());
     }
 
-    public void SpellLogic()
+    void Update()
+    {
+        SpellLogic();
+    }
+
+    virtual protected void SpellLogicStart()
     {
 
+    }
+
+    virtual protected void SpellLogic()
+    {
+
+    }
+
+    virtual protected void OnCollision(GameObject collidedObject)
+    {
+
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if ((CollisionLayers & (1 << collision.gameObject.layer)) > 0)
+            OnCollision(collision.gameObject);
     }
 
     IEnumerator Destructor()
